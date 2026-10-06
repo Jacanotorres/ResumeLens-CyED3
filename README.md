@@ -60,10 +60,11 @@ tests/               pytest test suite
 
 ## Team
 
-| Member | Student ID | GitHub |
-|--------|-----------|--------|
-| Juan Andrés Cano Torres | | @Jacanotorres |
-| | | |
-| | | |
+| Member                   | Student ID | GitHub        |
+|--------------------------|------------|---------------|
+| Juan Andrés Cano Torres< |            | @Jacanotorres |
+| Samuel Cardoso Martinez  | A00410894  | @samuel230674 |
+|                          |            |               |
+|                          |            |               |
 
 IDE: _to be filled_ · Course code: _09772 / 09834_ · Group: _1 / 3 / 5_
