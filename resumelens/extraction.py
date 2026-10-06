@@ -14,13 +14,13 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-
+# noinspection PyClassHasNoInit
 @dataclass
 class Experience:
     years: int
     description: str
 
-
+# noinspection PyClassHasNoInit
 @dataclass
 class ExtractionResult:
     name: str | None = None
