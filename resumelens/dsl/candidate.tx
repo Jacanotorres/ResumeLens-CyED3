@@ -1,0 +1,56 @@
+Candidate:
+    'candidate' name=STRING '{'
+        contact=Contact
+        education*=Education
+        experience*=Experience
+        skills=Skills
+        classification=Classification
+    '}'
+;
+
+Contact:
+    'contact' '{' items*=ContactItem '}'
+;
+
+ContactItem:
+    kind=ContactKind ':' value=STRING
+;
+
+ContactKind:
+    'email' | 'phone' | 'link'
+;
+
+Education:
+    'education' ':' degree=STRING
+;
+
+Experience:
+    'experience' '{'
+        'years' ':' years=INT
+        ('description' ':' description=STRING)?
+    '}'
+;
+
+Skills:
+    'skills' ':' tokens+=TOKEN[',']
+;
+
+Classification:
+    'classification' '{' results+=ProfileResult '}'
+;
+
+ProfileResult:
+    profile=ProfileKey ':' verdict=Verdict
+;
+
+ProfileKey:
+    'FULL_STACK_DEVELOPER' | 'MACHINE_LEARNING_ENGINEER' | 'DEVOPS_ENGINEER' | 'DATA_ENGINEER'
+;
+
+Verdict:
+    'ACCEPTED' | 'REJECTED'
+;
+
+TOKEN:
+    /[A-Z][A-Z0-9_]*/
+;
