@@ -55,4 +55,29 @@ _TODO_
 Grammar in EBNF, terminals and non-terminals, and structural characteristics of
 the language.
 
-_TODO_
+### Grammar (EBNF)
+
+```ebnf
+Candidate      = "candidate" STRING "{" Contact { Education } { Experience } Skills Classification "}" ;
+Contact        = "contact" "{" { ContactItem } "}" ;
+ContactItem    = ( "email" | "phone" | "link" ) ":" STRING ;
+Education      = "education" ":" STRING ;
+Experience     = "experience" "{" "years" ":" INT [ "description" ":" STRING ] "}" ;
+Skills         = "skills" ":" TOKEN { "," TOKEN } ;
+Classification = "classification" "{" ProfileResult { ProfileResult } "}" ;
+ProfileResult  = PROFILE_KEY ":" VERDICT ;
+```
+
+### Terminals and non-terminals
+
+- **Non-terminals:** Candidate, Contact, ContactItem, Education, Experience, Skills, Classification, ProfileResult.
+- **Terminals:** the keywords (`candidate`, `contact`, `email`, `phone`, `link`, `education`, `experience`, `years`, `description`, `skills`, `classification`), the symbols `{ } : ,` and the lexical classes:
+  - `STRING` = `"` { any character except `"` } `"`
+  - `INT` = digit { digit }
+  - `TOKEN` = [A-Z] { [A-Z] | [0-9] | `_` } (canonical token, e.g. `NODE_JS`)
+  - `PROFILE_KEY` = `FULL_STACK_DEVELOPER` | `MACHINE_LEARNING_ENGINEER` | `DEVOPS_ENGINEER` | `DATA_ENGINEER`
+  - `VERDICT` = `ACCEPTED` | `REJECTED`
+
+### Structural characteristics
+
+_(se completa en el commit 9)_
