@@ -80,4 +80,15 @@ ProfileResult  = PROFILE_KEY ":" VERDICT ;
 
 ### Structural characteristics
 
-_(se completa en el commit 9)_
+The candidate profile language has the following structural characteristics:
+
+- **Context-free (Chomsky type 2).** Every production has a single non-terminal on its left-hand side, so the language is specified by a context-free grammar and parsed into a tree (the textX model). The nesting depth is fixed (a `candidate` contains blocks, and blocks contain only flat items), so a finite automaton could also recognize the language; the grammar is used because it gives the hierarchical structure needed to build the model.
+- **Hierarchical.** `Candidate` is the root. `Contact`, `Experience` and `Classification` are nested blocks delimited by braces.
+- **Repetition.** `ContactItem`, `Education`, `Experience` and `ProfileResult` can repeat, and `TOKEN` repeats separated by commas (at least one skill is required).
+- **Optional parts.** Education records, experience records and the `description` of an experience may be omitted. The `contact` block, the skills and the classification are mandatory.
+- **Fixed section order.** Sections appear as contact, education, experience, skills, classification. The order of the items inside a repeated section is free.
+- **Free layout.** Whitespace and line breaks have no meaning; blocks are delimited by braces, not by indentation.
+- **No keyword clashes.** Keywords are lowercase and `TOKEN` must start with an uppercase letter, so a skill can never be mistaken for a keyword.
+- **Unambiguous.** Every alternative starts with a different keyword or literal, so each valid text has exactly one derivation.
+- **Lexical and syntactic errors are rejected.** Lexical: a lowercase token, a non-integer `years`, a name without quotes. Syntactic: a missing brace or sections out of order. textX reports the line and column of the error.
+- **Limits.** The grammar does not check semantic constraints such as duplicated skills or repeated profile keys; the builder (`to_dsl`) guarantees them by construction.
