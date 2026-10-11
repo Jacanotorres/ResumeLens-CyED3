@@ -6,6 +6,9 @@ import argparse
 import sys
 from pathlib import Path
 
+from resumelens.dsl.builder import to_dsl
+from resumelens.dsl.render import render_html
+from resumelens.dsl.validator import DSLValidationError, validate
 from resumelens.pipeline import screen
 
 
@@ -27,7 +30,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{match.profile_key:<28} {status:<9} {', '.join(match.sequence)}")
 
     if args.dsl or args.html:
-        raise NotImplementedError("Stage 4")
+        try:
+            dsl_text = to_dsl(result)
+            model = validate(dsl_text)
+        except (ValueError, DSLValidationError) as error:
+            print(f"Could not build the candidate profile: {error}", file=sys.stderr)
+            return 1
+        if args.dsl:
+            args.dsl.write_text(dsl_text, encoding="utf-8")
+            print(f"DSL written to {args.dsl}")
+        if args.html:
+            args.html.write_text(render_html(model), encoding="utf-8")
+            print(f"HTML written to {args.html}")   
     return 0
 
 
