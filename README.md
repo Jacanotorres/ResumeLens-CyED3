@@ -23,38 +23,80 @@ Supported profiles (`resumelens/profiles.py`):
 
 ## Setup
 
-Requires Python 3.11+ (developed with 3.14).
+Requires Python 3.11 or later.
+
+### Windows (PowerShell)
+
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+If PowerShell blocks virtual-environment activation, run the project commands
+with `.\.venv\Scripts\python.exe` instead.
+
+### macOS / Linux
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-Optional, to render the automata/transducer diagrams to PNG: install Graphviz
-(`brew install graphviz`).
+Graphviz is optional. Install it and use the `dot` command to render the
+included transducer diagram in `docs/diagrams/`.
 
 ## Usage
 
-```bash
-python -m resumelens data/resumes/wednesday_addams.txt --html output/wednesday.html
+Run commands from the repository root. The input must be a UTF-8 plain-text
+résumé. The CLI prints normalized skills and an `ACCEPTED` or `REJECTED`
+result for each supported profile.
+
+```powershell
+python -m resumelens data/resumes/wednesday_addams.txt
+python -m resumelens data/resumes/mary_jane_watson.txt
+python -m resumelens data/resumes/devops_engineer.txt
+python -m resumelens data/resumes/data_engineer.txt
 ```
+
+Use `--dsl` and `--html` to write the validated candidate-profile language and
+its HTML visualization. Both options can be used together:
+
+```powershell
+New-Item -ItemType Directory -Force output | Out-Null
+python -m resumelens data/resumes/wednesday_addams.txt `
+  --dsl output/wednesday.rl `
+  --html output/wednesday.html
+```
+
+On macOS or Linux, create the `output` directory with `mkdir -p output`. The
+CLI does not create output directories.
 
 ## Tests
 
-```bash
-pytest
+```powershell
+python -m pytest
 ```
+
+```bash
+python -m pytest
+```
+
+## Project documentation
+
+See [`docs/README.md`](docs/README.md) for the design documents, including the
+module architecture, formal models, test scenarios, and AI usage log.
 
 ## Repository layout
 
 ```
-resumelens/          source code (one module per stage)
+resumelens/          source code for the four pipeline stages
   profiles.py        the four profiles as data (categories + canonical order)
-  pipeline.py        runs the four stages over one résumé
-  dsl/               textX grammar, validator and HTML renderer
-data/resumes/        sample résumés used in tests and demos
-docs/                design documents (Markdown)
+  pipeline.py        runs extraction, normalization, and classification
+  dsl/               textX grammar, validator, builder, and HTML renderer
+data/resumes/        sample résumés for all four profiles
+docs/                design documents and diagrams
 tests/               pytest test suite
 ```
 
@@ -62,9 +104,8 @@ tests/               pytest test suite
 
 | Member                   | Student ID | GitHub        |
 |--------------------------|------------|---------------|
-| Juan Andrés Cano Torres< |            | @Jacanotorres |
+| Juan Andrés Cano Torres  |            | @Jacanotorres |
 | Samuel Cardoso Martinez  | A00410894  | @samuel230674 |
 |  Juan Felipe Martinez    | A00412033  | @JUANFIX1     |
-|                          |            |               |
 
 IDE: _to be filled_ · Course code: _09772 / 09834_ · Group: _1 / 3 / 5_
