@@ -2,20 +2,60 @@
 
 ## 3.1 Stage 1 — Regular expressions
 
-For each information type: the regular expression, the language it recognizes,
-and examples of accepted / rejected strings.
+Stage 1 applies Python's `re` patterns to the résumé text. Contact, education,
+experience, and skill patterns use `findall` or `finditer`; the name pattern
+uses `fullmatch` on the first non-empty line. `LINK_RE`, `EDUCATION_RE`,
+`EXPERIENCE_RE`, and the skill patterns are compiled with `re.IGNORECASE`;
+`Express` is the exception within the skill patterns and is case-sensitive.
 
-| Information | Regex | Language described | Examples |
-|-------------|-------|--------------------|----------|
-| Email | _TODO_ | | |
-| Phone | _TODO_ | | |
-| Links (GitHub, LinkedIn) | _TODO_ | | |
-| Years of experience | _TODO_ | | |
-| Academic qualifications | _TODO_ | | |
-| Programming languages | _TODO_ | | |
-| Frameworks and libraries | _TODO_ | | |
-| Databases | _TODO_ | | |
-| Tools and technologies | _TODO_ | | |
+| Information | Pattern in `resumelens/extraction.py` | Language recognized; example accepted / not recognized |
+|-------------|------------------------------------------|--------------------------------------------------------|
+| Name | `NAME_RE` (below) | Two to four capitalized name words, including supported Spanish accents, apostrophes, and hyphens. `Wednesday Addams` / `curriculum vitae 2026`. |
+| Email | `EMAIL_RE` (below) | ASCII alphanumeric and permitted punctuation in the local part, followed by a dotted domain and a final 2+ letter suffix. `mj.watson@example.com` / `mj@example`. |
+| Phone | `PHONE_RE` (below) | Optional country code and parenthesized area code, followed by digit groups with optional spaces, dots, or hyphens; digit boundaries prevent matching inside longer words. `+57 300 123 4567` / `12 34`. |
+| Links | `LINK_RE` (below), case-insensitive | HTTP(S) URLs, `www.` URLs, or bare `github.com/...` and `linkedin.com/...` paths. `https://github.com/mj` / `example.com/mj`. |
+| Education | `EDUCATION_RE` (below), case-insensitive | A whole line containing a supported degree or institution keyword. `B.Sc. in Computer Science` / `Software Engineer` (no listed keyword). |
+| Experience | `EXPERIENCE_RE` (below), case-insensitive | One or two digits, optional `+`, a supported English or Spanish duration unit, and the phrase `experience`; the optional description ends at the next period or newline. `3 years of experience developing apps` / `three years of experience`. |
+| Programming languages | `SKILL_RES["languages"]` (below) | Listed language names and abbreviations, matched case-insensitively as standalone skills. `JavaScript` / `JavaScript` does not produce an additional `Java` match. |
+| Frameworks and APIs | `SKILL_RES["frameworks"]` (below) | Listed front-end and back-end names, Spring Boot, REST/RESTful APIs, and GraphQL. `React.js` / `ReactNative` (no standalone match). `Express` is intentionally case-sensitive. |
+| Libraries | `SKILL_RES["libraries"]` (below) | Pandas, NumPy, supported Scikit-learn spellings, TensorFlow, PyTorch, and Keras. `scikit-learn` / `scikit`. |
+| Databases | `SKILL_RES["databases"]` (below) | Listed SQL and NoSQL database names, including Snowflake and BigQuery variants. `PostgreSQL` / `NoSQL` (the `SQL` substring is not matched). |
+| Tools and technologies | `SKILL_RES["tools"]` (below) | Listed version-control, CI/CD, infrastructure, operating-system, cloud, and data-platform terms. `GitHub Actions` / `GitHub` (the `Git` substring is not matched). |
+| Practices | `SKILL_RES["practices"]` (below) | Machine-learning model-development phrases and predictive model(s). `predictive models` / `model development` (without `machine` or `ml`). |
+
+The contact, education, and experience patterns are:
+
+```python
+NAME_RE = r"[A-ZÁÉÍÓÚÑ][a-záéíóúñ'’-]+(?:[ \t]+[A-ZÁÉÍÓÚÑ][a-záéíóúñ'’-]+){1,3}"
+EMAIL_RE = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"
+PHONE_RE = r"(?<![\w+])(?:\+\d{1,3}[ .-]?)?(?:\(\d{2,4}\)[ .-]?)?\d{3}[ .-]?\d{3}[ .-]?\d{2,4}(?![\w])"
+LINK_RE = r"(?:https?://|www\.)[^\s,;<>()]+|(?<![\w/@.])(?:linkedin\.com|github\.com)/[^\s,;<>()]+"
+EDUCATION_RE = r"^[^\n]*\b(?:bachelor|b\.?sc|master|m\.?sc|ph\.?d|degree|diploma|ingenier[ií]a|licenciatura|maestr[ií]a|university|universidad|college)\b[^\n]*$"
+EXPERIENCE_RE = r"(\d{1,2})\+?[ \t]*(?:years?|yrs?|años?)[ \t]+(?:of[ \t]+)?experience[ \t]*(?:(?:in|with|as|on)[ \t]+|:[ \t]*)?([^.\n]*)"
+```
+
+The six skill families share the boundary `(?<![\w.])` before the alternative
+and `(?!\w)` after it, with `re.IGNORECASE`. These boundaries prevent
+substrings such as `js` inside `NodeJS` and `SQL` inside `PostgreSQL` from
+being reported as separate skills. Matches preserve the original spelling and
+are returned in text order; normalization and deduplication belong to Stage 2.
+
+```python
+languages = r"java[ ]?script|js|type[ ]?script|ts|python|java|scala|bash"
+frameworks = (
+    r"react(?:[ ]?\.?[ ]?js)?|angular(?:[ ]?\.?[ ]?js)?|vue(?:[ ]?\.?[ ]?js)?|"
+    r"node(?:[ ]?\.?[ ]?js)?|(?-i:Express)(?:[ ]?\.?[ ]?js)?|django|flask|"
+    r"spring[ -]?boot|rest(?:ful)?[ ]+apis?|graphql"
+)
+libraries = r"pandas|numpy|scikit[ -]?learn|sklearn|tensor[ -]?flow|py[ -]?torch|keras"
+databases = r"postgres(?:ql)?|my[ ]?sql|sqlite|sql|mongo[ ]?db|redis|snowflake|big[ ]?query"
+tools = (
+    r"git|docker|kubernetes|k8s|jenkins|github[ ]?actions|gitlab(?:[ -]?ci)?|"
+    r"terraform|ansible|linux|aws|amazon[ ]web[ ]services|azure|gcp|google[ ]cloud|"
+    r"(?:apache[ ])?spark|hadoop|(?:apache[ ])?kafka|(?:apache[ ])?airflow|dbt"
+)
+practices = r"(?:machine|ml)[ -](?:learning[ ])?model[ ]development|predictive[ ]models?"
+```
 
 ## 3.2 Stage 2 — Finite-state transducers
 

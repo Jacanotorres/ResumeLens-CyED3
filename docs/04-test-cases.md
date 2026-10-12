@@ -11,12 +11,18 @@
 | S5 | Résumé matching more than one profile | _TODO_ |
 | S6 | Résumé missing a required category | _TODO_ |
 | S7 | Skills written in unusual order / casing | _TODO_ |
-| S8 | Invalid candidate profile DSL | S8 | Invalid candidate profile DSL | Profile text with lexical or syntax errors (`tests/test_dsl_validator.py`) |
+| S8 | Invalid candidate profile DSL | Profile text with lexical or syntax errors (`tests/test_dsl_validator.py`) |
+| S9 | Résumé with unsupported or malformed contact and experience strings | Text with unsupported URL, invalid duration, or non-name first line |
 
 ## Test cases
 
 | Id | Stage | Scenario | Input | Expected output |
 |----|-------|----------|-------|-----------------|
+| T1-01 | 1 | S1 | `Wednesday Addams`, `mj.watson@example.com`, `+57 300 123 4567` | Name, email, and phone are extracted |
+| T1-02 | 1 | S1 | `https://github.com/mj`, `linkedin.com/in/mj` | Both supported profile links are extracted without trailing punctuation |
+| T1-03 | 1 | S1 | `B.Sc. in Computer Science`; `3 years of experience developing apps.` | Education line and `Experience(3, "developing apps")` are extracted |
+| T1-04 | 1 | S7 | `NodeJS`, `React.js`, `JavaScript`, `PostgreSQL`, `NoSQL` | Longer skill matches are preserved; nested `JS`, `Java`, or `SQL` substrings are not emitted separately |
+| T1-05 | 1 | S9 | `curriculum vitae 2026`; `example.com/mj`; `three years of experience` | No name, supported link, or experience duration is extracted from these strings |
 | T2-01 | 2 | S7 | Surface forms `JS`, `Javascript`, and `JavaScript` | Each form normalizes to `JAVASCRIPT` regardless of case |
 | T2-02 | 2 | S7 | `React.js` and an unsupported skill such as `Rust` | `React.js` normalizes to `REACT`; the unsupported skill returns `None` |
 | T2-03 | 2 | S7 | `JS`, `javascript`, and `REACT` passed to `normalize_all` | Duplicate canonical output is removed and first-occurrence order is preserved |
