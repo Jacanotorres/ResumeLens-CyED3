@@ -116,3 +116,7 @@ sorted sequence that was fed to its automaton and the verdict.
 | Deduplicate after normalization | "JS" and "JavaScript" in the same résumé produce a single JAVASCRIPT. |
 | Canonical order by category | Makes the verdict independent of the order in which the candidate wrote their skills. |
 | Required vs optional categories | Models "must have" vs "nice to have" qualifications without extra code. |
+| DSL as a separate textual layer | The Stage 4 output is written in its own language, so a profile can be validated independently of the pipeline that produced it. |
+| Validate before rendering | `render_html` only receives a textX model that already passed `validate`, so the HTML is never built from an invalid profile. |
+| One verdict per profile | The DSL lists every profile with ACCEPTED or REJECTED, so the output is complete for each candidate. |
+| Profile keys listed in the grammar | The grammar rejects unknown profiles. The trade-off is that adding a profile also requires adding its key to `ProfileKey` in `candidate.tx`. |
