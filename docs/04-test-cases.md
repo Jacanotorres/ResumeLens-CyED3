@@ -6,11 +6,11 @@
 |----|----------|-------|
 | S1 | Full Stack résumé from the assignment | `data/resumes/wednesday_addams.txt` |
 | S2 | ML Engineer résumé from the assignment | `data/resumes/mary_jane_watson.txt` |
-| S3 | DevOps Engineer résumé | _TODO_ |
-| S4 | Data Engineer résumé | _TODO_ |
-| S5 | Résumé matching more than one profile | _TODO_ |
-| S6 | Résumé missing a required category | _TODO_ |
-| S7 | Skills written in unusual order / casing | _TODO_ |
+| S3 | DevOps Engineer résumé | `data/resumes/devops_engineer.txt` |
+| S4 | Data Engineer résumé | `data/resumes/data_engineer.txt` |
+| S5 | Résumé matching more than one profile | A résumé containing the required DevOps and Data Engineer categories (`tests/test_pipeline_profiles.py`) |
+| S6 | Résumé missing a required category | DevOps résumé without a scripting-language skill (`tests/test_pipeline_profiles.py`) |
+| S7 | Skills written in unusual order / casing | DevOps skills listed in mixed casing and noncanonical order (`tests/test_pipeline_profiles.py`) |
 | S8 | Invalid candidate profile DSL | Profile text with lexical or syntax errors (`tests/test_dsl_validator.py`) |
 | S9 | Résumé with unsupported or malformed contact and experience strings | Text with unsupported URL, invalid duration, or non-name first line |
 
@@ -32,6 +32,9 @@
 | T3-04 | 3 | S6 | A sequence missing a required category | The profile rejects the sequence |
 | T3-05 | 3 | S7 | Tokens in the wrong category order or outside the profile alphabet | The profile rejects the sequence |
 | T3-06 | 3 | S1 / S2 | A sequence omitting optional categories | The profile accepts if all required categories are present |
+| T3-07 | 3 | S5 | Résumé with all required DevOps and Data Engineer categories | Both profiles are accepted |
+| T3-08 | 3 | S6 | DevOps résumé with no scripting-language skill | DevOps Engineer is rejected |
+| T3-09 | 3 | S7 | Mixed-case DevOps skills listed in a noncanonical order | DevOps Engineer is accepted and the sequence is sorted canonically |
 | T4-01 | 4 | S8 | Valid profile for Wednesday Addams with 5 skills | Accepted; the model has 5 tokens and FULL_STACK_DEVELOPER is ACCEPTED |
 | T4-02 | 4 | S8 | `skills: javascript` (lowercase) | Rejected with `Expected TOKEN` and line and column |
 | T4-03 | 4 | S8 | `FULL_STACK_DEVELOPER: MAYBE` | Rejected with `Expected 'ACCEPTED' or 'REJECTED'` |

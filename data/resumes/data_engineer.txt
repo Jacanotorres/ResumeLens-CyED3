@@ -1,0 +1,4 @@
+Taylor Reed
+4 years of experience building data pipelines.
+Technical Skills:
+Python, PostgreSQL, Apache Spark, Apache Kafka, Apache Airflow, BigQuery, Git.

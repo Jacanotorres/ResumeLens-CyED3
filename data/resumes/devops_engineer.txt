@@ -1,0 +1,4 @@
+Alex Morgan
+5 years of experience automating cloud infrastructure.
+Technical Skills:
+Linux, Bash, Docker, Kubernetes, GitHub Actions, AWS, Terraform, Git.
