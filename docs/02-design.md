@@ -100,7 +100,7 @@ sorted sequence that was fed to its automaton and the verdict.
 | Function | Input | Output |
 |----------|-------|--------|
 | `to_dsl(result)` | `ScreeningResult` | Candidate profile text in the DSL |
-| `validate(text)` | DSL text | textX model, or a lexical/syntax error |
+| `validate(text)` | DSL text | textX model, or `DSLValidationError` with line and column |
 | `render_html(model)` | textX model | HTML string |
 
 ### `__main__.py` — CLI
