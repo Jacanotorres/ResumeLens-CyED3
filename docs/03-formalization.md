@@ -141,6 +141,44 @@ frontend-framework category accepts `REACT`, `ANGULAR`, or `VUE`). Inputs are
 the canonical tokens sorted by profile category; missing required categories,
 out-of-order tokens, and tokens outside the profile alphabet are rejected.
 
+### Per-profile definitions and diagrams
+
+The complete 5-tuple, the δ table and the transition diagram of each of the
+four automata are in [`diagrams/profile-automata.md`](diagrams/profile-automata.md).
+That file is generated from `resumelens/profiles.py` with
+`python -m resumelens.diagrams`, so the documentation and the implemented
+automata cannot diverge (`tests/test_diagrams.py` checks it).
+
+| Profile | Pattern | \|Q\| (ε-NFA) | \|Σ\| | ε-transitions | \|Q\| (minimal DFA) |
+|---------|---------|-------------|-----|---------------|--------------------|
+| Full Stack Developer | `C1⁺ C2⁺ C3⁺ C4⁺ C5* C6⁺` | 7 | 19 | 1 | 7 |
+| Machine Learning Engineer | `C1⁺ C2⁺ C3⁺ C4* C5⁺ C6⁺` | 7 | 12 | 1 | 7 |
+| DevOps Engineer | `C1⁺ C2⁺ C3⁺ C4* C5⁺ C6⁺ C7* C8⁺` | 9 | 14 | 2 | 9 |
+| Data Engineer | `C1⁺ C2⁺ C3⁺ C4⁺ C5* C6⁺` | 7 | 18 | 1 | 7 |
+
+### Type of automaton
+
+The four automata, as constructed, are **ε-NFAs**:
+
+- Every profile has at least one optional category, and skipping it is
+  modeled with a transition `δ(qᵢ₋₁, ε) = {qᵢ}`. A DFA cannot have
+  ε-transitions, so the constructed machine is not a DFA.
+- Apart from ε, the machine has no nondeterministic choice. The categories of
+  a profile are disjoint (`tests/test_profiles.py`), so in each state a token
+  `a` has at most one move: the self-loop if `a ∈ Cᵢ`, or the step to `qᵢ₊₁`
+  if `a ∈ Cᵢ₊₁`. If ε were removed, the machine would be a (partial) DFA.
+- A profile with only required categories would therefore be built directly
+  as a DFA; the ε-transitions are the only reason the general construction
+  needs an ε-NFA.
+
+For execution, `build_automaton` applies the subset construction
+(`to_deterministic`) and minimization. For an optional category `Cᵢ`, the
+state reached after `Cᵢ₋₁` becomes the subset `ε-closure(qᵢ₋₁) = {qᵢ₋₁, qᵢ}`,
+which can either read `Cᵢ` or jump to `Cᵢ₊₁`. The result again has one state
+per category boundary (`n + 1` states); undefined transitions (tokens out of
+order or outside Σ) go to an implicit dead state. The tests check that the
+ε-NFA and the minimal DFA are equivalent for all four profiles.
+
 ## 3.4 Stage 4 — Candidate profile grammar (EBNF)
 
 Grammar in EBNF, terminals and non-terminals, and structural characteristics of

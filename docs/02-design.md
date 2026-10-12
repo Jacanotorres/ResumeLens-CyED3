@@ -74,7 +74,8 @@ algorithm.
 
 | Function | Input | Output |
 |----------|-------|--------|
-| `build_automaton(profile)` | `Profile` | pyformlang finite automaton |
+| `build_epsilon_nfa(profile)` | `Profile` | pyformlang `EpsilonNFA` (one state per category boundary) |
+| `build_automaton(profile)` | `Profile` | Equivalent minimal `DeterministicFiniteAutomaton` |
 | `accepts(profile, sorted_tokens)` | `Profile`, sorted tokens | `bool` |
 
 **Pattern construction.** For a profile with categories C₁ … Cₙ the accepted
@@ -85,6 +86,17 @@ language is the concatenation
 `Cᵢ⁺` lets a résumé list several items of the same category (e.g. PANDAS NUMPY).
 Optional categories introduce ε-transitions, so the natural construction is an
 ε-NFA that is then converted to an equivalent minimal DFA.
+
+### `diagrams.py` — Stage 3 documentation
+
+| Function | Input | Output |
+|----------|-------|--------|
+| `to_mermaid(profile)` | `Profile` | Mermaid transition diagram of the profile's ε-NFA |
+| `formal_definition(profile)` | `Profile` | Markdown with the 5-tuple, δ table and diagram |
+| `render_document()` | — | Content of `docs/diagrams/profile-automata.md` for the four profiles |
+
+`python -m resumelens.diagrams` regenerates the document; a test fails if it
+is out of date with `profiles.py`.
 
 ### `pipeline.py`
 

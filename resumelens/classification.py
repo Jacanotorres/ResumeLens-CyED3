@@ -16,11 +16,12 @@ from pyformlang.finite_automaton import (
 from resumelens.profiles import Profile
 
 
-def build_automaton(profile: Profile) -> DeterministicFiniteAutomaton:
-    """Build a minimal DFA for the ordered qualification categories in ``profile``.
+def build_epsilon_nfa(profile: Profile) -> EpsilonNFA:
+    """Build the ε-NFA for the ordered qualification categories in ``profile``.
 
-    Each required category must contribute one or more tokens; optional
-    categories may be skipped. Tokens within a category may repeat.
+    State ``i`` is reached after reading category ``i``. Each required category
+    must contribute one or more tokens; optional categories may be skipped
+    through an ε-transition. Tokens within a category may repeat.
     """
     automaton = EpsilonNFA()
     automaton.add_start_state(0)
@@ -34,7 +35,12 @@ def build_automaton(profile: Profile) -> DeterministicFiniteAutomaton:
             automaton.add_transition(previous_state, Epsilon(), state)
 
     automaton.add_final_state(len(profile.categories))
-    return automaton.to_deterministic().minimize()
+    return automaton
+
+
+def build_automaton(profile: Profile) -> DeterministicFiniteAutomaton:
+    """Build the minimal DFA equivalent to the profile's ε-NFA."""
+    return build_epsilon_nfa(profile).to_deterministic().minimize()
 
 
 def accepts(profile: Profile, sorted_tokens: list[str]) -> bool:
