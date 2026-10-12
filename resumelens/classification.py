@@ -7,16 +7,36 @@ sorted token sequences that satisfy the profile pattern.
 
 from __future__ import annotations
 
-from pyformlang.finite_automaton import DeterministicFiniteAutomaton
+from pyformlang.finite_automaton import (
+    DeterministicFiniteAutomaton,
+    Epsilon,
+    EpsilonNFA,
+)
 
 from resumelens.profiles import Profile
 
 
 def build_automaton(profile: Profile) -> DeterministicFiniteAutomaton:
-    """Build the automaton M = (Q, Σ, δ, q0, F) that recognizes ``profile``'s pattern."""
-    raise NotImplementedError("Stage 3")
+    """Build a minimal DFA for the ordered qualification categories in ``profile``.
+
+    Each required category must contribute one or more tokens; optional
+    categories may be skipped. Tokens within a category may repeat.
+    """
+    automaton = EpsilonNFA()
+    automaton.add_start_state(0)
+
+    for state, category in enumerate(profile.categories, start=1):
+        previous_state = state - 1
+        for token in category.tokens:
+            automaton.add_transition(previous_state, token, state)
+            automaton.add_transition(state, token, state)
+        if not category.required:
+            automaton.add_transition(previous_state, Epsilon(), state)
+
+    automaton.add_final_state(len(profile.categories))
+    return automaton.to_deterministic().minimize()
 
 
 def accepts(profile: Profile, sorted_tokens: list[str]) -> bool:
     """Run the profile automaton over a sequence already sorted for that profile."""
-    raise NotImplementedError("Stage 3")
+    return build_automaton(profile).accepts(sorted_tokens)

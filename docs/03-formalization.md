@@ -34,21 +34,44 @@ _TODO_
 
 ## 3.3 Stage 3 — Finite automata
 
-For each of the four profiles, M = (Q, Σ, δ, q₀, F), automaton type (DFA / NFA /
-ε-NFA) with justification, transition diagram and the profile pattern it
-represents.
+The classifier builds one ε-NFA from each profile's ordered categories. For a
+profile with categories `C₁, …, Cₙ`, each required category contributes
+`Cᵢ⁺` and each optional category contributes `Cᵢ*`, where `Cᵢ` is the set of
+canonical tokens for that category. The ε-NFA is converted to a minimized DFA
+by `pyformlang`; both forms recognize the same language.
 
-### Full Stack Developer
-_TODO_
+For the ε-NFA `M = (Q, Σ, δ, q₀, F)`:
 
-### Machine Learning Engineer
-_TODO_
+- `Q = {q₀, …, qₙ}`, with one state at each category boundary.
+- `Σ` is the profile's canonical token alphabet.
+- `δ` maps a state and an input token (or ε) to a set of states.
+- For each category `Cᵢ` and token `a ∈ Cᵢ`, add
+  `qᵢ₋₁ --a--> qᵢ` and a self-loop `qᵢ --a--> qᵢ`.
+- For an optional category `Cᵢ`, also add `qᵢ₋₁ --ε--> qᵢ`.
+- The initial state is `q₀`; the only accepting state is `qₙ`.
 
-### DevOps Engineer
-_TODO_
+The transition schema is repeated for every category:
 
-### Data Engineer
-_TODO_
+```text
+q(i-1) -- a ∈ Cᵢ --> q(i) -- a ∈ Cᵢ --> q(i)
+   |                     (self-loop for additional tokens)
+   +---- ε ------------> q(i)     (optional category only)
+```
+
+The profile-specific patterns are the category sequences defined in
+`resumelens/profiles.py`:
+
+| Profile | Required categories in order | Optional categories |
+|---------|------------------------------|--------------------|
+| Full Stack Developer | Frontend language, frontend framework, backend, database, version control | API |
+| Machine Learning Engineer | Language, data processing, ML library, database, version control | ML practice |
+| DevOps Engineer | Operating system, scripting, containers, CI/CD, cloud, version control | Orchestration, infrastructure as code |
+| Data Engineer | Language, database, big data, orchestration, version control | Cloud / warehouse |
+
+Each category accepts any token in its set (for example, the Full Stack
+frontend-framework category accepts `REACT`, `ANGULAR`, or `VUE`). Inputs are
+the canonical tokens sorted by profile category; missing required categories,
+out-of-order tokens, and tokens outside the profile alphabet are rejected.
 
 ## 3.4 Stage 4 — Candidate profile grammar (EBNF)
 
