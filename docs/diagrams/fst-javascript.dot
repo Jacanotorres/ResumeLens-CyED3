@@ -1,0 +1,33 @@
+digraph FSTJavaScript {
+    rankdir=LR;
+    graph [label="FST paths: JS and javascript -> JAVASCRIPT", labelloc=t];
+    node [shape=circle];
+    start [shape=point];
+    js1 [label="q(JS,1)"];
+    js2 [shape=doublecircle, label="q(JS,2)"];
+    jscr1 [label="q(javascript,1)"];
+    jscr2 [label="q(javascript,2)"];
+    jscr3 [label="q(javascript,3)"];
+    jscr4 [label="q(javascript,4)"];
+    jscr5 [label="q(javascript,5)"];
+    jscr6 [label="q(javascript,6)"];
+    jscr7 [label="q(javascript,7)"];
+    jscr8 [label="q(javascript,8)"];
+    jscr9 [label="q(javascript,9)"];
+    jscr10 [shape=doublecircle, label="q(javascript,10)"];
+
+    start -> q0;
+    q0 [label="q0"];
+    q0 -> js1 [label="j / eps"];
+    js1 -> js2 [label="s / JAVASCRIPT"];
+    q0 -> jscr1 [label="j / eps"];
+    jscr1 -> jscr2 [label="a / eps"];
+    jscr2 -> jscr3 [label="v / eps"];
+    jscr3 -> jscr4 [label="a / eps"];
+    jscr4 -> jscr5 [label="s / eps"];
+    jscr5 -> jscr6 [label="c / eps"];
+    jscr6 -> jscr7 [label="r / eps"];
+    jscr7 -> jscr8 [label="i / eps"];
+    jscr8 -> jscr9 [label="p / eps"];
+    jscr9 -> jscr10 [label="t / JAVASCRIPT"];
+}

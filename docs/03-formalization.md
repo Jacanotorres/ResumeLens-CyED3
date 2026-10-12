@@ -19,18 +19,46 @@ and examples of accepted / rejected strings.
 
 ## 3.2 Stage 2 — Finite-state transducers
 
-For each transducer M = (Q, Σ, Γ, δ, ω, q₀, F):
+`build_transducer` constructs one finite-state transducer from the entries in
+`SKILL_VARIANTS`. Before translation, `normalize` strips surrounding
+whitespace and applies Unicode case folding. For a variant `v` of length
+`m`, the transducer follows a separate character-by-character path and emits
+the canonical token only on its last transition.
 
-- Q — set of states
-- Σ — input alphabet
-- Γ — output alphabet
-- δ — transition relation
-- ω — output relation
-- q₀ — initial state
-- F — accepting states
-- Diagram (`diagrams/`)
+For the current variant table, the transducer is
+`M = (Q, Σ, Γ, δ, ω, q₀, F)`:
 
-_TODO_
+- `Q = {q₀} ∪ {qᵥ,ᵢ | v ∈ V, 1 ≤ i ≤ |v|}`, where `V` is the set of distinct,
+  stripped and case-folded surface forms. Each variant has its own path states.
+- `Σ = ⋃ᵥ chars(v)`, the characters appearing in the surface forms.
+- `Γ = {SKILL_VARIANTS[v] | v ∈ V}`, the set of canonical skill tokens.
+- `q₀` is the shared initial state.
+- `F = {qᵥ,|v| | v ∈ V}`, the last state on each variant path.
+- For each variant `v = c₁…cₘ`, `δ` has the transitions
+  `(q₀, c₁, qᵥ,₁)` and `(qᵥ,ᵢ₋₁, cᵢ, qᵥ,ᵢ)` for `2 ≤ i ≤ m`.
+- `ω` outputs the empty string on all but the last transition of a path;
+  on the last transition it outputs `SKILL_VARIANTS[v]`. In the `pyformlang`
+  implementation, that output is represented as an empty list or a
+  single-token list, respectively.
+
+The diagram shows two actual entries from the table. `eps` on an edge means
+that the transition emits no output; the last edge emits `JAVASCRIPT`.
+Other variants have their own paths constructed by the same rule.
+
+```text
+                         j/eps  s/JAVASCRIPT
+                        ┌───→ q(JS,1) → ((q(JS,2)))
+                       /
+                     → q₀
+                       \
+                        └───→ q(javascript,1) → … → ((q(javascript,10)))
+                         j/eps   a/eps  v/eps  a/eps  s/eps  c/eps  r/eps  i/eps  p/eps  t/JAVASCRIPT
+```
+
+Here `q₀` is the initial state and double parentheses mark accepting states.
+The source diagram for this example is
+[`diagrams/fst-javascript.dot`](diagrams/fst-javascript.dot). It represents
+the two illustrated paths, not the full variant table.
 
 ## 3.3 Stage 3 — Finite automata
 

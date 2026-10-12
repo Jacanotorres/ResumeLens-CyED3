@@ -17,6 +17,9 @@
 
 | Id | Stage | Scenario | Input | Expected output |
 |----|-------|----------|-------|-----------------|
+| T2-01 | 2 | S7 | Surface forms `JS`, `Javascript`, and `JavaScript` | Each form normalizes to `JAVASCRIPT` regardless of case |
+| T2-02 | 2 | S7 | `React.js` and an unsupported skill such as `Rust` | `React.js` normalizes to `REACT`; the unsupported skill returns `None` |
+| T2-03 | 2 | S7 | `JS`, `javascript`, and `REACT` passed to `normalize_all` | Duplicate canonical output is removed and first-occurrence order is preserved |
 | T3-01 | 3 | S1 | `JAVASCRIPT, REACT, NODE_JS, POSTGRESQL, GIT` | Full Stack Developer accepts the sequence |
 | T3-02 | 3 | S2 | `PYTHON, PANDAS, TENSORFLOW, POSTGRESQL, GIT` | Machine Learning Engineer accepts the sequence |
 | T3-03 | 3 | S3 / S4 | One valid ordered sequence for each team-defined profile | DevOps Engineer and Data Engineer accept their sequences |
