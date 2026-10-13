@@ -44,8 +44,9 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Graphviz is optional. Install it and use the `dot` command to render the
-included transducer diagram in `docs/diagrams/`.
+The automaton diagrams in `docs/diagrams/profile-automata.md` are written in
+Mermaid and render directly on GitHub. Graphviz is optional; it is only needed
+to render the transducer example `docs/diagrams/fst-javascript.dot` with `dot`.
 
 ## Usage
 
@@ -58,7 +59,12 @@ python -m resumelens data/resumes/wednesday_addams.txt
 python -m resumelens data/resumes/mary_jane_watson.txt
 python -m resumelens data/resumes/devops_engineer.txt
 python -m resumelens data/resumes/data_engineer.txt
+python -m resumelens data/resumes/frontend_developer.txt
+python -m resumelens data/resumes/platform_data_engineer.txt
 ```
+
+The last two are edge cases: a frontend-only résumé that no profile accepts,
+and a résumé accepted by both DevOps Engineer and Data Engineer.
 
 Use `--dsl` and `--html` to write the validated candidate-profile language and
 its HTML visualization. Both options can be used together:
@@ -99,21 +105,30 @@ python -m resumelens.results    # docs/06-results.md and docs/examples/
 ## Repository layout
 
 ```
-resumelens/          source code for the four pipeline stages
-  profiles.py        the four profiles as data (categories + canonical order)
-  pipeline.py        runs extraction, normalization, and classification
-  dsl/               textX grammar, validator, builder, and HTML renderer
-data/resumes/        sample résumés for all four profiles
-docs/                design documents and diagrams
-tests/               pytest test suite
+resumelens/            source code for the four pipeline stages
+  extraction.py        Stage 1: regular expressions
+  normalization.py     Stage 2: finite-state transducer and profile sorting
+  classification.py    Stage 3: ε-NFA per profile and its minimal DFA
+  dsl/                 Stage 4: textX grammar, validator, builder, HTML renderer
+  profiles.py          the four profiles as data (categories + canonical order)
+  pipeline.py          runs extraction, normalization, and classification
+  diagrams.py          generates the automata definitions and diagrams
+  results.py           generates the results report and examples
+  __main__.py          command-line interface
+data/resumes/          sample résumés (one per profile plus two edge cases)
+docs/                  design documents, diagrams, results
+  examples/            validated candidate profiles (.rl) and HTML pages
+tests/                 pytest test suite
 ```
 
 ## Team
 
-| Member                   | Student ID | GitHub        |
-|--------------------------|------------|---------------|
-| Juan Andrés Cano Torres  |            | @Jacanotorres |
-| Samuel Cardoso Martinez  | A00410894  | @samuel230674 |
-|  Juan Felipe Martinez    | A00412033  | @JUANFIX1     |
+| Member                  | GitHub        |
+|-------------------------|---------------|
+| Juan Andrés Cano Torres | @Jacanotorres |
+| Samuel Cardoso Martinez | @samuel230674 |
+| Juan Felipe Martinez    | @JUANFIX1     |
 
-IDE: _to be filled_ · Course code: _09772 / 09834_ · Group: _1 / 3 / 5_
+| Course code | Group | Professor | IDE | Language |
+|-------------|-------|-----------|-----|----------|
+| 09834 | 3 | Andrés | Visual Studio Code | Python 3.11+ (tested with 3.14) |
