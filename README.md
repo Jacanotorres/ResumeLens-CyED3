@@ -86,7 +86,15 @@ python -m pytest
 ## Project documentation
 
 See [`docs/README.md`](docs/README.md) for the design documents, including the
-module architecture, formal models, test scenarios, and AI usage log.
+module architecture, formal models, test scenarios, results, and AI usage log.
+
+Two documents are generated from the code and checked by the tests; regenerate
+them after changing a profile, the pipeline or the sample résumés:
+
+```bash
+python -m resumelens.diagrams   # docs/diagrams/profile-automata.md
+python -m resumelens.results    # docs/06-results.md and docs/examples/
+```
 
 ## Repository layout
 

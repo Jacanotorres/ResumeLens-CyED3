@@ -13,6 +13,8 @@
 | S7 | Skills written in unusual order / casing | DevOps skills listed in mixed casing and noncanonical order (`tests/test_pipeline_profiles.py`) |
 | S8 | Invalid candidate profile DSL | Profile text with lexical or syntax errors (`tests/test_dsl_validator.py`) |
 | S9 | Résumé with unsupported or malformed contact and experience strings | Text with unsupported URL, invalid duration, or non-name first line |
+| S10 | Near miss: frontend-only résumé | `data/resumes/frontend_developer.txt` |
+| S11 | Résumé file matching two profiles | `data/resumes/platform_data_engineer.txt` |
 
 ## Test cases
 
@@ -47,3 +49,7 @@
 | T4-10 | 4 | S1 | ScreeningResult with no recognized skills | `to_dsl` raises ValueError |
 | T4-11 | 4 | S8 | Name containing `<Admin>` rendered to HTML | The HTML shows `&lt;Admin&gt;` (escaped) |
 | T4-12 | 4 | S1 | CLI run with `--dsl` and `--html` | Both files are written and the exit code is 0 |
+| T5-01 | 3 | S10 | `frontend_developer.txt` | Rejected by every profile; Full Stack reports missing Backend and Database |
+| T5-02 | 3 | S11 | `platform_data_engineer.txt` | Accepted by DevOps Engineer and Data Engineer only |
+| T5-03 | 3 | S1–S11 | Every sample résumé | A profile is rejected if and only if a required category has no token |
+| T5-04 | 1–4 | S1–S11 | `python -m resumelens.results` | `docs/06-results.md` and `docs/examples/` match the current pipeline output |

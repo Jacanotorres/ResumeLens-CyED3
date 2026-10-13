@@ -1,0 +1,5 @@
+Sam Rivera
+sam.rivera@example.com
+2 years of experience building user interfaces.
+Technical Skills:
+JavaScript, TypeScript, ReactJS, Vue.js, Git.

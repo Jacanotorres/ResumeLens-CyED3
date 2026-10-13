@@ -98,6 +98,16 @@ Optional categories introduce ε-transitions, so the natural construction is an
 `python -m resumelens.diagrams` regenerates the document; a test fails if it
 is out of date with `profiles.py`.
 
+### `results.py` — Results report
+
+| Function | Input | Output |
+|----------|-------|--------|
+| `missing_required(profile, tokens)` | `Profile`, canonical tokens | Names of required categories with no token (reason for a rejection) |
+| `build()` | Résumés in `data/resumes/` | `docs/06-results.md` and the `.rl` / `.html` files of `docs/examples/` |
+
+`python -m resumelens.results` regenerates the report; a test fails if it is
+out of date.
+
 ### `pipeline.py`
 
 | Function | Input | Output |

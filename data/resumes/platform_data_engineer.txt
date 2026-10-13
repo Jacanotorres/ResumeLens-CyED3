@@ -1,0 +1,6 @@
+Jordan Lee
+jordan.lee@example.com
+B.Sc. in Systems Engineering, Universidad Icesi
+6 years of experience building data platforms on the cloud.
+Technical Skills:
+Python, Linux, Bash, Docker, Jenkins, AWS, Terraform, MySQL, Spark, Airflow, Git.
