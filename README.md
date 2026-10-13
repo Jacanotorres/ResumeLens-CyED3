@@ -94,6 +94,8 @@ python -m pytest
 See [`docs/README.md`](docs/README.md) for the design documents, including the
 module architecture, formal models, test scenarios, results, and AI usage log.
 
+The research poster is [`docs/poster/poster.pdf`](docs/poster/poster.pdf) (48 × 36 in).
+
 Two documents are generated from the code and checked by the tests; regenerate
 them after changing a profile, the pipeline or the sample résumés:
 
